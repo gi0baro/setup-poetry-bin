@@ -1,6 +1,6 @@
 # Setup poetry-bin action
 
-A Github action for installing and configuring [Poetry](https://python-poetry.org/) Python dependency tool in [binary format](https://github.co/gi0baro/poetry-bin).
+A Github action for installing and configuring [Poetry](https://python-poetry.org/) Python dependency tool in [binary format](https://github.com/gi0baro/poetry-bin).
 
 ## Usage
 
