@@ -1,4 +1,4 @@
-name: Install Poetry Bin
+name: Setup Poetry-Bin
 author: Giovanni Barillari <gi0baro@d4net.org>
 description: Installs and configures Poetry
 branding:
@@ -63,8 +63,3 @@ runs:
         echo -e "\n\033[33mInstallation completed ✅\033[0m"
 
       shell: bash
-
-    # - name: Windows PowerShell path
-    #   run: |
-    #     echo "C:/Users/runneradmin/AppData/Roaming/PoetryBin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-    #   if: ${{ runner.os == "Windows" }}
