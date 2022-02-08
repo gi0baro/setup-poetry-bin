@@ -22,9 +22,6 @@ runs:
   steps:
     - name: Install and configure Poetry
       run: |
-        _version_target="$(mktemp)"
-        _archive="$(mktemp)"
-
         if [ "${{ runner.os }}" == "Windows" ]; then
           _target_arch=x86_64-pc-windows-msvc
         elif [ "${{ runner.os }}" == "macOS" ]; then
@@ -32,9 +29,6 @@ runs:
         else
           _target_arch=x86_64-unknown-linux-gnu
         fi
-
-        curl -sSL https://api.github.com/repos/gi0baro/poetry-bin/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' > $_version_target
-        _version=$(cat $_version_target)
 
         if [ "${{ runner.os }}" == "Windows" ]; then
           path="C:/Users/runneradmin/AppData/Roaming/PoetryBin"
@@ -46,16 +40,21 @@ runs:
           _poetry=poetry
         fi
 
-        echo -e "\n\033[33mSetting Poetry installation path as $path\033[0m\n"
-        echo -e "\033[33mInstalling Poetry $_version\033[0m\n"
-
-        curl -sSL https://github.com/gi0baro/poetry-bin/releases/download/$_version/poetry-bin-$_version-$_target_arch.tar.gz > $_archive
+        echo -e "\n\033[33mSetting Poetry installation path as: $path\033[0m\n"
         mkdir -p $path
-        tar xzf $_archive --directory $path
 
+        echo -e "\033[33mFetching latest Poetry version..\033[0m\n"
+        _release=$(curl -sSL -H 'authorization: Bearer ${{ github.token }}' https://api.github.com/repos/gi0baro/poetry-bin/releases/latest)
+        _version=$(echo "$_release" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+        echo -e "\033[33mInstalling Poetry $_version\033[0m\n"
+        _archive=$(mktemp)
+        curl -sSL https://github.com/gi0baro/poetry-bin/releases/download/$_version/poetry-bin-$_version-$_target_arch.tar.gz > $_archive
+        tar xzf $_archive --directory $path
         echo "$_binpath" >> $GITHUB_PATH
         export PATH="$_binpath:$PATH"
 
+        echo -e "\033[33mConfiguring Poetry..\033[0m\n"
         $_poetry config virtualenvs.create ${{ inputs.virtualenvs-create }}
         $_poetry config virtualenvs.in-project ${{ inputs.virtualenvs-in-project }}
         $_poetry config virtualenvs.path ${{ inputs.virtualenvs-path }}
