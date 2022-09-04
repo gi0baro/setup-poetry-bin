@@ -44,8 +44,7 @@ runs:
         mkdir -p $path
 
         echo -e "\033[33mFetching latest Poetry version..\033[0m\n"
-        _release=$(curl -sSL -H 'authorization: Bearer ${{ github.token }}' https://api.github.com/repos/gi0baro/poetry-bin/releases/latest)
-        _version=$(echo "$_release" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        _version=1.1.15-1
 
         echo -e "\033[33mInstalling Poetry $_version\033[0m\n"
         _archive=$(mktemp)
